@@ -17,54 +17,60 @@ public class HelloServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        //metrics for alert: SpringBootDemoJvmGc
-        String jvm_gc_pause_seconds =
-            "# HELP jvm_gc_pause_seconds time spent in GC pause\n"
-            + "# TYPE jvm_gc_pause_seconds summary\n"
-            + "jvm_gc_pause_seconds_count{cause=\"Metadata GC Threshold\"} 2.0\n"
-            + "jvm_gc_pause_seconds_sum{cause=\"Metadata GC Threshold\"} .489\n"
-            + "jvm_gc_pause_seconds_count{cause=\"Allocation Failure\"} 4.0\n"
-            + "jvm_gc_pause_seconds_sum{cause=\"Allocation Failure\"} .932\n";
+        //metrics for alert: TomcatDemoJvmGc
+        String jvm_gc_collection_seconds =
+                "# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.\n"
+                + "# TYPE jvm_gc_collection_seconds summary\n"
+                + "jvm_gc_collection_seconds_count{gc=\"PS MarkSweep\"} .932\n"
+                + "jvm_gc_collection_seconds_sum{gc=\"PS MarkSweep\"} 4\n";
         
-        //metrics for alert: SpringBootDemoJvmMemory
-        String jvm_memory_used_bytes = 
-            "# HELP jvm_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this pool\n"
-            + "# TYPE jvm_memory_used_bytes gauge\n"
-            + "jvm_memory_used_bytes{area=\"heap\",id=\"PS Survivor Space\"} 81920.0\n";
-        
-        String jvm_memory_max_bytes =
-            "# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management\n"
-            + "# TYPE jvm_memory_max_bytes gauge\n"
-            + "jvm_memory_max_bytes{area=\"heap\",id=\"PS Survivor Space\"} 41504.2\n"
-            + "jvm_memory_max_bytes{area=\"heap\",id=\"PS Old Gen\"} 12310.5\n"
-            + "jvm_memory_max_bytes{area=\"heap\",id=\"PS EdenSpace\"} 37854.4\n"
-            + "jvm_memory_max_bytes{area=\"nonheap\"} 994399.1\n";
-        
-        //metrics for alert: SpringBootDemoProcessRestarts
-        String process_uptime_seconds =
-            "# HELP process_uptime_seconds The uptime of the JVM\n"
-            + "# TYPE process_uptime_seconds gauge\n"
-            + "process_uptime_seconds 44\n";
-        
-        //metrics for alert: SpringBootDemoProcessTime
-        String http_server_requests_seconds_max =
-            "# HELP http_server_requests_seconds_max time to complete an HTTP server request\n"
-            + "# TYPE http_server_requests_seconds_max gauge\n"
-            + "http_server_requests_seconds_max{exception=\"None\",outcome=\"SUCCESS\"} 11.0\n";
-        
-        //metrics for alert: SpringBootDemoRequestErrors
-        String http_server_requests_seconds =
-            "# HELP http_server_requests_seconds summary of HTTP server requests\n"
-            + "# TYPE http_server_requests_seconds summary\n"
-            + "http_server_requests_seconds_sum{exception=\"None\",method=\"GET\",status=\"200\"} 54\n"
-            + "http_server_requests_seconds_count{exception=\"None\",method=\"GET\",status=\"200\"} 4\n"
-            + "http_server_requests_seconds_count{exception=\"None\",method=\"GET\",outcome=\"CLIENT_ERROR\",status=\"501\"} 2\n"
-            + "http_server_requests_seconds_max{exception=\"None\",method=\"GET\",outcome=\"CLIENT_ERROR\",status=\"501\"} 5\n";
-       
+        //metrics for alert: TomcatDemoJvmMemory
+        String jvm_memory_bytes_used = 
+            "# HELP jvm_memory_bytes_used An estimate of the memory that the Java virtual machine is using for this pool\n"
+            + "# TYPE jvm_memory_bytes gauge\n"
+            + "jvm_memory_bytes_used{area=\"heap\"} 81920.0\n"
+            + "jvm_memory_bytes_used{area=\"nonheap\"} 324.5\n";
             
+        String jvm_memory_bytes_max =
+            "# HELP jvm_memory_bytes_max The maximum amount of memory in bytes that can be used for memory management\n"
+            + "# TYPE jvm_memory_bytes_max gauge\n"
+            + "jvm_memory_bytes_max{area=\"heap\",id=\"PS Survivor Space\"} 41504.2\n"
+            + "jvm_memory_bytes_max{area=\"heap\",id=\"PS Old Gen\"} 12310.5\n"
+            + "jvm_memory_bytes_max{area=\"heap\",id=\"PS EdenSpace\"} 37854.4\n"
+            + "jvm_memory_bytes_max{area=\"nonheap\"} 994399.1\n";
+            
+        //metrics for alert: TomcatDemoProcessRestarts
+        String process_start_time_seconds =
+            "# HELP process_start_time_seconds start time since unix epoch in seconds\n"
+            + "# TYPE process_start_time_seconds gauge\n"
+            + "process_start_time_seconds 44\n";
         
-        String output = jvm_gc_pause_seconds + jvm_memory_used_bytes + jvm_memory_max_bytes + process_uptime_seconds
-            + http_server_requests_seconds_max + http_server_requests_seconds + "# EOF\n";       
+        //metrics for alert: TomcatDemoProcessTime
+        String servlet_request_seconds =
+            "# HELP servlet_request_seconds The time taken fulfilling servlet requests\n"
+            + "# TYPE servlet_request_seconds histogram\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"0.01\"} 1.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"0.05\"} 2.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"0.1\"} 2.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"0.25\"} 2.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"0.5\"} 3.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"1.0\"} 4.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"2.5\"} 4.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"5.0\"} 5.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"10.0\"} 28.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"30.0\"} 67.0\n"
+            + "servlet_request_seconds_bucket{method=\"GET\",le=\"+Inf\"} 67.0\n";
+        
+        //metrics for alert: TomcatDemoRequestErrors
+        String servlet_response_status_total =
+            "# HELP servlet_response_status_total Number of requests for a given context and status code\n"
+            + "# TYPE servlet_response_status_total gauge\n"
+            + "servlet_response_status_total{status=\"200\"} 54\n"
+            + "servlet_response_status_total{status=\"501\"} 2\n"
+            + "servlet_response_status_total{status=\"504\"} 8\n";
+        
+        String output = jvm_gc_collection_seconds + jvm_memory_bytes_used + jvm_memory_bytes_max +
+                process_start_time_seconds + servlet_request_seconds + servlet_response_status_total + "# EOF\n";       
         ServletOutputStream out = resp.getOutputStream();
         out.write(output.getBytes());
         out.flush();

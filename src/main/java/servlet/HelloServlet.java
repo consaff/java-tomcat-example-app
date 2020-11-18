@@ -17,7 +17,6 @@ public class HelloServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-             {
         //metrics for alert: SpringBootDemoJvmGc
         String jvm_gc_pause_seconds =
             "# HELP jvm_gc_pause_seconds time spent in GC pause\n"
@@ -66,7 +65,6 @@ public class HelloServlet extends HttpServlet {
         
         String output = jvm_gc_pause_seconds + jvm_memory_used_bytes + jvm_memory_max_bytes + process_uptime_seconds
             + http_server_requests_seconds_max + http_server_requests_seconds + "# EOF\n";       
-    }
         ServletOutputStream out = resp.getOutputStream();
         out.write(output.getBytes());
         out.flush();
